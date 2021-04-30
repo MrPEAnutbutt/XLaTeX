@@ -1,0 +1,190 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%              A K N OW L E D G E                               %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Thanks for the 'mcode' package provided by MathWorks, whose excellent work gives me a lot help;
+%% Also thanke for the 'pythonhighlight' package provided by Olivier Verdier.
+
+%% This package is developed by Zilong Xu from China, 
+%% And if any problem, you can contact ZilongXu20001229@outlook.com
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%              D O N ' T    T O U C H    T H I S                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\fileversion{1.1}
+\def\filedate{2021/4/30}
+
+
+\typeout{-- Package: `xmatlabcode' \fileversion\space <\filedate> --}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{xmatlabcode}[\filedate\space\fileversion]
+
+\RequirePackage{listings}
+\RequirePackage{xcolor}
+
+
+% check if color command exists
+\ifx\color\undefined%
+  \RequirePackage{xcolor}%
+\fi
+
+% check if listings has been loaded
+\ifx\lstset\undefined%
+    \RequirePackage{listings}
+\fi
+
+% Check if textcomp has been loaded (this package is needed for
+% upright quotes '' (instead of typographic ones `´)...
+\ifx\textquotesingle\undefined% 
+  \RequirePackage{textcomp}%
+\fi
+
+% for lstinline hight
+% for lstinline hight
+% If ther is ! not ! other package used for code hilight concerned with listings,
+% You can add a 'single' parameter before this package.
+\newif\ifxmatlabcode@single
+\DeclareOption{single}{\xmatlabcode@singletrue}
+
+\DeclareOption*{% default
+  \PackageWarning{xmatlabcode}{Unknown option `\CurrentOption' !}%
+}
+\ProcessOptions
+
+\ifxmatlabcode@single\typeout{Command 'mcode' is valid, lstinline is available.}
+\else\typeout{!!!Command 'mcode' and 'mcodefn' is invalid, because it will share a listingsinline setting withe oter codes.}\fi
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            C O M M A N D S   Y O U   C A N   U S E            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% COMMAND 1
+% This command allows you to typeset syntax highlighted lingo code ``inline''.  The font size \small seems to look best...
+\providecommand{\code}[1]{\fbox{\ttfamily\small{#1}}}
+%% COMMAND 2
+\providecommand{\codefn}[1]{\fbox{\ttfamily\footnotesize{#1}}}
+%% COMMAND 3
+\newcommand*{\inputmatlab}[3]{\lstinputlisting%
+[firstline=#2,lastline=#3,firstnumber=#2,frame=single,breakindent=.5\textwidth,frame=single,breaklines=true]{#1}}
+%firstline=#2,lastline=#3,firstnumber=#2,
+%% COMMAND 4
+\lstnewenvironment{matlab}[1][]{\lstset
+{style=mymatlab}}{}
+
+%% It only works when you added a 'single' parameter.
+\ifxmatlabcode@single%   
+\newcommand{\mcode}[1]{\fbox{\lstinline[
+  language=matlab, 
+  morekeywords={%                             % keywords
+		break,case,catch,classdef,continue,else,
+		elseif,end,for,function,global,if,
+		otherwise,parfor,persistent,
+		return,spmd,switch,try,while,...},  
+  basicstyle=\ttfamily\small]|#1|}}
+
+\newcommand{\mcodefn}[1]{\fbox{\lstinline[
+  language=matlab,
+  morekeywords={%                             % keywords
+		break,case,catch,classdef,continue,else,
+		elseif,end,for,function,global,if,
+		otherwise,parfor,persistent,
+		return,spmd,switch,try,while,...},  
+  basicstyle=\ttfamily\footnotesize]|#1|}}
+\fi
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                C U S T O M I S E   B E L O W                  %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ---------------------------------------------------------------------------------
+% ---------------------------------------------------------------------------------
+% Settings of <lstlisting> whole environment
+% line numbering
+\lstset{%
+  numbersep=3mm, numbers=left, numberstyle=\tiny, % number style
+}
+% ---------------------------------------------------------------------------------
+% framed option
+\lstset{%
+  frame=single,
+  rulecolor=\color{black},
+  columns=fullflexible             % frame
+}
+\lstset{%
+  framexleftmargin=6mm, 
+  xleftmargin=6mm,
+  aboveskip={1.5\baselineskip}                   % tweak margins
+}
+\newsavebox{\mlbreakdots}\sbox{\mlbreakdots}{{\ttfamily\selectfont\footnotesize\color[rgb]{.133,.545,.133}...}}
+\lstset{breaklines=true,breakatwhitespace=true,prebreak=\usebox{\mlbreakdots}}
+
+% ---------------------------------------------------------------------------------
+% ---------------------------------------------------------------------------------
+% Settings of <mymatlab> style
+\lstdefinestyle{mymatlab}{
+  language=matlab,%matlabfloz
+  basicstyle={\ttfamily\footnotesize},
+  tabsize=4,
+  breaklines=true,
+  showstringspaces=false,
+  keywordstyle={\bfseries
+  %\color{blue}
+  },
+  commentstyle={\sffamily\color[rgb]{.133,.545,.133}},
+  alsoletter={...},%
+  morekeywords={%                             % keywords
+		break,case,catch,classdef,continue,else,
+		elseif,end,for,function,global,if,
+		otherwise,parfor,persistent,
+		return,spmd,switch,try,while,...},        % Use the matlab "iskeyword" command to get those
+  comment=[l]\%,                              % comments
+  morecomment=[l]...,                         % comments
+  morecomment=[s]{\%\{}{\%\}},                % block comments
+  morestring=[m]',                             % strings 
+  columns=fullflexible,                       %[fullflexible, flexible, fixed]
+  upquote=true,
+  mathescape=false,escapechar=§               % escape to latex with §...§
+}
+
+
+
+% ---------------------------------------------------------------------------------
+% literate replacements
+% the following is for replacing some matlab relations like >= or ~=
+% by the corresponding LaTeX symbols, which are much easier to read ...
+% when you need it, cancel the comment mode.
+	% \lstset{%
+	% 	literate=%
+	% 		{~}{{$\neg$}}1 %               \neg, logical not
+	% 		{<=}{{\tiny$\leq$}}1 %         \leq
+	% 		{>=}{{\tiny$\geq$}}1 %         \geq
+	% 		{~=}{{\tiny$\neq$}}1 %         \neq, not equal
+	% 		{delta}{{\tiny$\Delta$}}1 %    \Delta
+	% 		{µ}{{$\mu$}}1 %                \mu
+	% 		{(end)}{\lstbasicfont (end)}{5} % black ``end'' when indexing last vector element
+	% 		{({ }end)}{\lstbasicfont ({ }end)}{6}
+	% 		{(end{ })}{\lstbasicfont (end{ })}{6}
+	% 		{({ }end{ })}{\lstbasicfont ({ }end{ })}{7}
+	% 		{:end}{\lstbasicfont :end}{4}
+	% 		{:{ }end}{\lstbasicfont :{ }end}{5}
+	% 		{end:}{\lstbasicfont end:}{4}
+	% 		{end{ }:}{\lstbasicfont end{ }:}{5}
+	% 		{,end}{\lstbasicfont ,end}{4}
+	% 		{,{ }end}{\lstbasicfont ,{ }end}{5}
+  % }
+
+
+
+% fix for ``minus'' character issue, as suggested by Stefan Karlsson, thanks!
+\makeatletter 
+\lst@CCPutMacro\lst@ProcessOther {"2D}{\lst@ttfamily{-{}}{-{}}} 
+\@empty\z@\@empty 
+\makeatother
+
+
+
+
+\endinput
+%% End of file `xmatlabcode.sty'.

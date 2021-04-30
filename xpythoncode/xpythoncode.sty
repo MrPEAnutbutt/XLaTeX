@@ -1,0 +1,217 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%              A K N OW L E D G E                               %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Thanks for the 'mcode' package provided by MathWorks, whose excellent work gives me a lot of help;
+%% Also thanke for the 'pythonhighlight' package provided by Olivier Verdier.
+
+%% This package is developed by Zilong Xu from China, 
+%% And if any problem, you can contact ZilongXu20001229@outlook.com
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%              D O N ' T    T O U C H    T H I S                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\fileversion{1.1}
+\def\filedate{2021/4/30}
+
+
+\typeout{-- Package: `xpythoncode' \fileversion\space <\filedate> --}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{xpythoncode}[\filedate\space\fileversion]
+
+\RequirePackage{listings}
+\RequirePackage{xcolor}
+
+
+% check if color command exists
+\ifx\color\undefined%
+  \RequirePackage{xcolor}%
+\fi
+
+% check if listings has been loaded
+\ifx\lstset\undefined%
+    \RequirePackage{listings}
+\fi
+
+% Check if textcomp has been loaded (this package is needed for
+% upright quotes '' (instead of typographic ones `´)...
+\ifx\textquotesingle\undefined% 
+  \RequirePackage{textcomp}%
+\fi
+
+% for lstinline hight
+% If ther is ! not ! other package used for code hilight concerned with listings,
+% You can add a 'single' parameter before this package.
+\newif\ifxpythoncode@single
+\DeclareOption{single}{\xpythoncode@singletrue}
+
+\DeclareOption*{% default
+  \PackageWarning{xpythoncode}{Unknown option `\CurrentOption' !}%
+}
+\ProcessOptions
+
+\ifxpythoncode@single\typeout{Command 'pcode' is valid, lstinline is available.}
+\else\typeout{!!!Command 'pcode' and 'pcodefn' is invalid, because it will share a listingsinline setting withe oter codes.}\fi
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            C O M M A N D S   Y O U   C A N   U S E            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% COMMAND 1
+\providecommand{\code}[1]{\fbox{\ttfamily\small{#1}}}
+%% COMMAND 2
+\providecommand{\codefn}[1]{\fbox{\ttfamily\footnotesize{#1}}}
+%% COMMAND 3
+\newcommand*{\inputpython}[3]{\lstinputlisting%
+[style=mypython,firstline=#2,lastline=#3,firstnumber=#2,frame=single,breakindent=.5\textwidth,frame=single,breaklines=true]{#1}}
+%% COMMAND 4
+\lstnewenvironment{python}[1][]{\lstset
+{style=mypython}}{}
+
+%% It only works when you added a 'single' parameter.
+\ifxpythoncode@single%   
+\newcommand{\pcode}[1]{\lstinline[
+  language=python, 
+  otherkeywords={\%, \}, \{, \&, \|},
+  basicstyle=\ttfamily\small]|#1|}
+
+\newcommand{\pcodefn}[1]{\lstinline[
+  language=python,
+  otherkeywords={\%, \}, \{, \&, \|},
+  basicstyle=\ttfamily\footnotesize]|#1|}
+\fi
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                C U S T O M I S E   B E L O W                  %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ---------------------------------------------------------------------------------
+% ---------------------------------------------------------------------------------
+% Settings of <lstlisting> whole environment
+% line numbering
+\lstset{%
+  numbersep=3mm, numbers=left, numberstyle=\tiny, % number style
+}
+% ---------------------------------------------------------------------------------
+% framed option
+\lstset{%
+  frame=single,
+  rulecolor=\color{black},
+  columns=fullflexible             % frame
+}
+\lstset{%
+  framexleftmargin=6mm, 
+  xleftmargin=6mm,
+  aboveskip={1.5\baselineskip}                   % tweak margins
+}
+\newsavebox{\plbreakdots}\sbox{\plbreakdots}{{\ttfamily\selectfont\footnotesize\color[rgb]{.133,.545,.133}\textbackslash}}
+\lstset{breaklines=true,breakatwhitespace=true,prebreak=\usebox{\plbreakdots}}
+% ---------------------------------------------------------------------------------
+% ---------------------------------------------------------------------------------
+% Settings of <mypython> style
+
+\colorlet{stringcolour}{red!60!black}
+\colorlet{keywordcolour}{magenta!90!black}
+\colorlet{exceptioncolour}{yellow!50!red}
+\colorlet{commandcolour}{blue!60!black}
+\colorlet{numpycolour}{blue!60!green}
+\colorlet{literatecolour}{magenta!90!black}
+\colorlet{promptcolour}{green!50!black}
+\colorlet{specmethodcolour}{violet}
+\newcommand*{\literatecolour}{\textcolor{literatecolour}}
+\lstdefinestyle{mypython}{
+  language=python,
+  basicstyle={\ttfamily\footnotesize},
+  tabsize=4,
+  backgroundcolor=\color{white},
+  breaklines=true,
+  showstringspaces=false,
+  keywordstyle={\bfseries
+  %\color{blue}
+  },
+  otherkeywords={\%, \}, \{, \&, \|},
+  commentstyle={\sffamily\color[rgb]{.133,.545,.133}},
+  morecomment=[s]{"""}{"""},
+  columns=fullflexible, %[fullflexible, flexible, fixed]
+  upquote=true,
+  alsoletter={1234567890},
+  emph={and,break,class,continue,def,yield,del,elif ,else,%
+  except,exec,finally,for,from,global,if,import,in,%
+  lambda,not,or,pass,print,raise,return,try,while,assert,with},
+  emphstyle=\color{blue}\bfseries,
+  emph={[2]True, False, None},
+  emphstyle=[2]\color{keywordcolour},
+  emph={[3]object,type,isinstance,copy,deepcopy,zip,enumerate,reversed,list,set,len,dict,tuple,xrange,append,execfile,real,imag,reduce,str,repr},
+  emphstyle=[3]\color{commandcolour},
+  emph={[4]Exception,NameError,IndexError,SyntaxError,TypeError,ValueError,OverflowError,ZeroDivisionError},
+  emphstyle=[4]\color{exceptioncolour}\bfseries,
+  emph={[5]ode, fsolve, sqrt, exp, sin, cos,arctan, arctan2, arccos, pi,  array, norm, solve, dot, arange, isscalar, max, sum, flatten, shape, reshape, find, any, all, abs, plot, linspace, legend, quad, polyval,polyfit, hstack, concatenate,vstack,column_stack,empty,zeros,ones,rand,vander,grid,pcolor,eig,eigs,eigvals,svd,qr,tan,det,logspace,roll,min,mean,cumsum,cumprod,diff,vectorize,lstsq,cla,eye,xlabel,ylabel,squeeze},
+  emphstyle=[5]\color{numpycolour},
+  emph={[6]__init__,__add__,__mul__,__div__,__sub__,__call__,__getitem__,__setitem__,__eq__,__ne__,__nonzero__,__rmul__,__radd__,__repr__,__str__,__get__,__truediv__,__pow__,__name__,__future__,__all__},
+  emphstyle=[6]\color{specmethodcolour},
+  emph={[7]assert,yield},
+  emphstyle=[7]\color{keywordcolour}\bfseries,
+  emph={[8]range},
+  emphstyle={[8]\color{keywordcolour}\bfseries},
+  literate=*%
+  {:}{{\literatecolour:}}{1}%
+  {=}{{\literatecolour=}}{1}%
+  {-}{{\literatecolour-}}{1}%
+  {+}{{\literatecolour+}}{1}%
+  {*}{{\literatecolour*}}{1}%
+  {**}{{\literatecolour{**}}}2%
+  {/}{{\literatecolour/}}{1}%
+  {//}{{\literatecolour{//}}}2%
+  {!}{{\literatecolour!}}{1}%
+  {[}{{\literatecolour[}}{1}%
+  {]}{{\literatecolour]}}{1}%
+  {<}{{\literatecolour<}}{1}%
+  {>}{{\literatecolour>}}{1}%
+  {>>>}{\pythonprompt}{3}%
+  {:}{{\literatecolour:}}{2}%
+  {=}{{\literatecolour=}}{2}%
+  {-}{{\literatecolour-}}{2}%
+  {+}{{\literatecolour+}}{2}%
+  {*}{{\literatecolour*}}2%
+  {**}{{\literatecolour{**}}}3%
+  {/}{{\literatecolour/}}{2}%
+  {//}{{\literatecolour{//}}}{2}%
+  {!}{{\literatecolour!}}{2}%
+  %{(}{{\literatecolour(}}{2}%
+  %{)}{{\literatecolour)}}{2}%
+  {[}{{\literatecolour[}}{2}%
+  {]}{{\literatecolour]}}{2}%
+  {<}{{\literatecolour<}}{2}%
+  {<=}{{\literatecolour{<=}}}3%
+  {>}{{\literatecolour>}}{2}%
+  {>=}{{\literatecolour{>=}}}3%
+  {==}{{\literatecolour{==}}}3%
+  {!=}{{\literatecolour{!=}}}3%
+  {+=}{{\literatecolour{+=}}}3%
+  {-=}{{\literatecolour{-=}}}3%
+  {*=}{{\literatecolour{*=}}}3%
+  {/=}{{\literatecolour{/=}}}3%
+}
+
+
+
+
+\endinput
+%% End of file `xpythoncode.sty'.
+
+
+
+
+% ---------------------------------------------------------------------------------
+% Keep for Modification
+% stringstyle=\color{stringcolour},
+% alsoletter={1234567890},
+% emph={, ,},
+% emphstyle=\color{blue}\bfseries,
+% literate=*%
+
+
+
+
+
+

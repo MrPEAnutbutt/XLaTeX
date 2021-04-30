@@ -1,0 +1,155 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%              A K N OW L E D G E                               %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Thanks for the 'mcode' package provided by MathWorks, whose excellent work gives me a lot help;
+%% Also thanke for the 'pythonhighlight' package provided by Olivier Verdier.
+
+%% This package is developed by Zilong Xu from China, 
+%% And if any problem, you can contact ZilongXu20001229@outlook.com
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%              D O N ' T    T O U C H    T H I S                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\fileversion{1.1}
+\def\filedate{2021/4/28}
+
+
+\typeout{-- Package: `xlingocode' \fileversion\space <\filedate> --}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{xlingocode}[\filedate\space\fileversion]
+
+\RequirePackage{listings}
+\RequirePackage{xcolor}
+
+
+% check if color command exists
+\ifx\color\undefined%
+  \RequirePackage{xcolor}%
+\fi
+
+% check if listings has been loaded
+\ifx\lstset\undefined%
+    \RequirePackage{listings}
+\fi
+
+% Check if textcomp has been loaded (this package is needed for
+% upright quotes '' (instead of typographic ones `´)...
+\ifx\textquotesingle\undefined% 
+  \RequirePackage{textcomp}%
+\fi
+
+% for lstinline hight
+% If ther is ! not ! other package used for code hilight concerned with listings,
+% You can add a 'single' parameter before this package.
+\newif\ifxlingocode@single
+\DeclareOption{single}{\xlingocode@singletrue}
+
+\DeclareOption*{% default
+  \PackageWarning{xlingocode}{Unknown option `\CurrentOption' !}%
+}
+\ProcessOptions
+
+\ifxlingocode@single\typeout{Command 'lcode' is valid, lstinline is available.}
+\else\typeout{!!!Command 'lcode' and 'lcodefn' is invalid, because it will share a listingsinline setting withe oter codes.}\fi
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            C O M M A N D S   Y O U   C A N   U S E            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% COMMAND 1
+\providecommand{\code}[1]{\fbox{\ttfamily\small{#1}}}
+%% COMMAND 2
+\providecommand{\codefn}[1]{\fbox{\ttfamily\footnotesize{#1}}}
+%% COMMAND 3
+\newcommand*{\inputlingo}[3]{\lstinputlisting%
+[firstline=#2,lastline=#3,firstnumber=#2,frame=single,breakindent=.5\textwidth,frame=single,breaklines=true]{#1}}
+%firstline=#2,lastline=#3,firstnumber=#2,
+%% COMMAND 4
+\lstnewenvironment{lingo}[1][]{\lstset
+{style=mylingo}}{}
+
+%% It only works when you added a 'single' parameter.
+\ifxlingocode@single%   
+\newcommand{\lcode}[1]{\fbox{\lstinline[
+  language=lingo, 
+  keywordstyle={\bfseries\color{blue}},
+  otherkeywords={sets , endsets , data , enddata},
+  basicstyle=\ttfamily\small]|#1|}}
+
+\newcommand{\lcodefn}[1]{\fbox{\lstinline[
+  language=lingo,
+  otherkeywords={sets , endsets , data , enddata},
+  basicstyle=\ttfamily\footnotesize]|#1|}}
+\fi
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                C U S T O M I S E   B E L O W                  %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ---------------------------------------------------------------------------------
+% ---------------------------------------------------------------------------------
+% Settings of <lstlisting> whole environment
+% line numbering
+\lstset{%
+  numbersep=3mm, numbers=left, numberstyle=\tiny, % number style
+}
+% ---------------------------------------------------------------------------------
+% framed option
+\lstset{%
+  frame=single,
+  rulecolor=\color{black},
+  columns=fullflexible             % frame
+}
+\lstset{%
+  framexleftmargin=6mm, 
+  xleftmargin=6mm,
+  aboveskip={1.5\baselineskip}                   % tweak margins
+}
+% ---------------------------------------------------------------------------------
+% ---------------------------------------------------------------------------------
+% Settings of <mylingo> style
+\lstdefinestyle{mylingo}{
+  language=lingo,
+  basicstyle={\ttfamily\footnotesize},
+  tabsize=4,
+  breaklines=true,
+  showstringspaces=false,
+  keywordstyle={\bfseries\color{blue}},
+  otherkeywords={endsets ,sets:,model:, data: , enddata},
+  emph={@chartbar,      @chartbubble,      @chartcontour,      @chartcurve,      @chartgantt,      @charthisto,      @chartline,      @chartnetarc,      @chartnetnode,      @chartpie,      @chartradar,      @chartscatter,      @chartshbar,      @chartsvbar,      @chartspacetime,      @chartsurface,      @charttornado,      @ymd2stm,      @stm2yr,      @stm2mon,      @stm2day,      @stm2hr,      @stm2min,      @stm2sec,      @stm2dwk,      @time,      @pbetacdf,      @pbetainv
+  @pbetapdf,      @pbtbncdf,      @pbtbninv,      @pbtbnpdf,      @pbinocdf,      @pbinoinv,      @pbinopdf,      @pcacycdf,      @pcacyinv,      @pcacypdf,      @pchiscdf,      @pchisinv,      @pchispdf,      @pexpocdf,      @pexpoinv,      @pexpopdf,      @pfdstcdf,      @pfdstinv,      @pfdstpdf,      @pgammcdf,      @pgamminv,      @pgammpdf,      @pgeomcdf,      @pgeominv,      @pgeompdf,      @pgmblcdf,      @pgmblinv,      @pgmblpdf,      @phypgcdf,      @phypginv,      @phypgpdf,      @plaplcdf,      @plaplinv,      @plaplpdf,      @plgstcdf,      @plgstinv,      @plgstpdf,      @plogncdf,      @plogninv,      @plognpdf,      @plogrcdf,      @plogrinv,      @plogrpdf,      @pnegbcdf,      @pnegbinv,      @pnegbpdf,      @pnormcdf,      @pnorminv,      @pnormpdf,      @ppoiscdf,      @ppoisinv,      @ppoispdf,      @pprtocdf,      @pprtoinv,      @pprtopdf,      @psmstcdf,      @psmstinv,      @psmstpdf,      @pstutcdf,      @pstutinv,      @pstutpdf,      @ptriacdf,      @ptriainv,      @ptriapdf,      @punifcdf,      @punifinv,      @punifpdf,      @pweibcdf,      @pweibinv,      @pweibpdf,      @file,      @odbc,      @ole,   
+  @pointer,      @readln,      @readrm,      @text,      @fpa,      @fpl,      @abs,      @exp,      @floor,      @int,      @integral,      @lgm,      @log,      @log10,      @logb,      @mod,      @posd,      @pow,      @round,      @rounddown,      @roundup,      @sign,      @smax,      @smin,      @sqr,      @sqrt,      @cholesky,      @determinant,      @eigen,      @inverse,      @mtxmul,      @regress,      @qrfactor,      @regress,      @transpose,      @peb,      @pel,      @pfs,      @ppl,      @psl,      @qrand,      @rand,      @apiset,      @break,      @debug,      @divert,      @gen,      @gendual,      @genxdet,      @ifc,      @netkbest,      @pause,      @pic,      @release,      @set,      @smpi,      @smps,      @solu,      @solve,      @solverlog,      @stats,      @stop,      @while,      @dual,      @format,      @iters,      @name,      @newline,      @objbnd,      @ranged,  
+  @rangeu,      @status,      @strlen,      @table,      @write,      @writefor,      @in,      @index,      @insert,      @size,      @wrap,      @for,      @max,      @min,      @prod,      @sum,      @spstgrndv,      @spstgrow,      @spstgvar,      @spdistbeta,      @spdistbino,      @spdistbtbn,      @spdistcacy,      @spdistchis,      @spdistexpo,      @spdistfdst,      @spdistgamm,      @spdistgeom,      @spdistgmbl,      @spdisthypg,      @spdistlapl,      @spdistlgst,      @spdistlogn,      @spdistlogr,      @spdistnegb,      @spdistnorm,      @spdistpois,      @spdistprto,      @spdistsmst,      @spdiststut,      @spdisttria,      @spdistunif, 
+  @spdistweib,      @spdisttable,      @sptableshape,      @sptableoutc,      @sptableinst,      @sptablerndv,      @spcorrkendall,      @spcorrpearson,      @spcorrspearman,      @spsampsize,      @sploadscene,      @spnumscene,      @spprbscene,      @acos,      @acosh,      @asin,      @asinh,      @atan,      @atan2,      @atanh,      @cos,      @cosh,      @pi,      @sin,      @sinh,      @tan,      @tanh,      @bin,      @bnd,      @card,      @free,      @gin,      @semic,      @sos1,      @sos2,      @sos3,      @blockrow,      @if,      @rank,      @sort,      @user,      @warn,  
+  @CHARTBAR,      @CHARTBUBBLE,      @CHARTCONTOUR,      @CHARTCURVE,      @CHARTGANTT,      @CHARTHISTO,      @CHARTLINE,      @CHARTNETARC,      @CHARTNETNODE,      @CHARTPIE,      @CHARTRADAR,      @CHARTSCATTER,      @CHARTSHBAR,      @CHARTSVBAR,      @CHARTSPACETIME,      @CHARTSURFACE,      @CHARTTORNADO,      @YMD2STM,      @STM2YR,      @STM2MON,      @STM2DAY,      @STM2HR,      @STM2MIN,      @STM2SEC,      @STM2DWK,      @TIME,      @PBETACDF,      @PBETAINV,      @PBETAPDF,      @PBTBNCDF,      @PBTBNINV,      @PBTBNPDF,      @PBINOCDF,      @PBINOINV,      @PBINOPDF,      @PCACYCDF,      @PCACYINV,      @PCACYPDF,      @PCHISCDF,      @PCHISINV,      @PCHISPDF,      @PEXPOCDF,      @PEXPOINV,      @PEXPOPDF,      @PFDSTCDF,      @PFDSTINV,      @PFDSTPDF,      @PGAMMCDF,      @PGAMMINV,      @PGAMMPDF,      @PGEOMCDF,      @PGEOMINV,      @PGEOMPDF,      @PGMBLCDF,      @PGMBLINV,      @PGMBLPDF,      @PHYPGCDF,      @PHYPGINV,      @PHYPGPDF,      @PLAPLCDF,      @PLAPLINV,      @PLAPLPDF,      @PLGSTCDF,      @PLGSTINV,      @PLGSTPDF,      @PLOGNCDF,      @PLOGNINV,      @PLOGNPDF,      @PLOGRCDF,      @PLOGRINV,      @PLOGRPDF,      @PNEGBCDF,      @PNEGBINV,      @PNEGBPDF,      @PNORMCDF,      @PNORMINV,      @PNORMPDF,      @PPOISCDF,      @PPOISINV,      @PPOISPDF,      @PPRTOCDF,      @PPRTOINV,      @PPRTOPDF,      @PSMSTCDF,      @PSMSTINV,      @PSMSTPDF,      @PSTUTCDF,      @PSTUTINV,      @PSTUTPDF,      @PTRIACDF,      @PTRIAINV,      @PTRIAPDF,      @PUNIFCDF,      @PUNIFINV,      @PUNIFPDF,      @PWEIBCDF,      @PWEIBINV,      @PWEIBPDF,      @FILE,      @ODBC,      @OLE,      @POINTER,      @READLN,      @READRM,      @TEXT,      @FPA,      @FPL,      @ABS,      @EXP,      @FLOOR,      @INT,      @INTEGRAL,      @LGM,      @LOG,      @LOG10,      @LOGB,      @MOD,     
+  @POSD,      @POW,      @ROUND,      @ROUNDDOWN,      @ROUNDUP,      @SIGN,      @SMAX,      @SMIN,      @SQR,      @SQRT,      @CHOLESKY,      @DETERMINANT,      @EIGEN,      @INVERSE,      @MTXMUL,      @REGRESS,      @QRFACTOR,      @REGRESS,      @TRANSPOSE,      @PEB,      @PEL,      @PFS,      @PPL,      @PSL,      @QRAND,      @RAND,      @APISET,      @BREAK,      @DEBUG,      @DIVERT,      @GEN,      @GENDUAL,      @GENXDET,      @IFC,      @NETKBEST,      @PAUSE,      @PIC,      @RELEASE,      @SET,      @SMPI,      @SMPS,      @SOLU,      @SOLVE,      @SOLVERLOG,      @STATS,      @STOP,      @WHILE,      @DUAL,      @FORMAT,      @ITERS,      @NAME,      @NEWLINE,      @OBJBND,      @RANGED,      @RANGEU,      @STATUS,      @STRLEN,      @TABLE,      @WRITE,      @WRITEFOR,      @IN,      @INDEX,      @INSERT,      @SIZE,      @WRAP,      @FOR,      @MAX,      @MIN,      @PROD,      @SUM,      @SPSTGRNDV,      @SPSTGROW,      @SPSTGVAR,      @SPDISTBETA,      @SPDISTBINO,      @SPDISTBTBN,      @SPDISTCACY,      @SPDISTCHIS,      @SPDISTEXPO,      @SPDISTFDST,      @SPDISTGAMM,      @SPDISTGEOM,      @SPDISTGMBL,      @SPDISTHYPG,      @SPDISTLAPL,      @SPDISTLGST,      @SPDISTLOGN,      @SPDISTLOGR,      @SPDISTNEGB,      @SPDISTNORM,      @SPDISTPOIS,      @SPDISTPRTO,      @SPDISTSMST,      @SPDISTSTUT,      @SPDISTTRIA,      @SPDISTUNIF,      @SPDISTWEIB,      @SPDISTTABLE,      @SPTABLESHAPE,      @SPTABLEOUTC,      @SPTABLEINST,
+  @SPTABLERNDV,      @SPCORRKENDALL,      @SPCORRPEARSON,      @SPCORRSPEARMAN,      @SPSAMPSIZE,      @SPLOADSCENE,      @SPNUMSCENE,      @SPPRBSCENE,      @ACOS,      @ACOSH,      @ASIN,      @ASINH,      @ATAN,      @ATAN2,      @ATANH,      @COS,      @COSH,      @PI,      @SIN,      @SINH,      @TAN,      @TANH,      @BIN,      @BND,      @CARD,      @FREE,      @GIN,      @SEMIC,      @SOS1,      @SOS2,      @SOS3,      @BLOCKROW,      @IF,      @RANK,      @SORT,      @USER,      @WARN},
+  emphstyle={\bfseries\color{blue}},
+  commentstyle={\sffamily\color[rgb]{.133,.545,.133}},
+  morecomment=[n]{!}{;},
+  columns=fullflexible, %[fullflexible, flexible, fixed]
+  upquote=true,
+  mathescape=false,escapechar=§
+}
+
+
+
+
+\endinput
+%% End of file `xlingocode.sty'.
+
+
+
+
+% ---------------------------------------------------------------------------------
+% Keep for Modification
+% stringstyle=\color{stringcolour},
+% alsoletter={1234567890},
+% emph={, ,},
+% emphstyle=\color{blue}\bfseries,
+% literate=*%
+
+
+
+
